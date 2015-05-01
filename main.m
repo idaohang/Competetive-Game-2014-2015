@@ -4,13 +4,13 @@ global phi
 global delta_dev
 global S
 global delta
-global count
-count = 0;
+%global count
+%count = 0;
 
 tic
 
 if(nargin < 2 || isempty(tol))
-    tol = 1e-6;
+    tol = 1e-9;
 end
 if(nargin < 1 || isempty(n))
     n = 0;
@@ -22,12 +22,13 @@ delta = data.delta;
 rho = get_orbit_dev_linspace(n);
 phi = get_orbit_dev_angle_linspace(n);
 delta_dev = get_pseudo_dist_dev_linspace(n);
-inp = [length(rho)*ones(1,5) length(phi)*ones(1,5) length(delta)*ones(1,5)];
+inp = [length(rho)*ones(1,5) length(phi)*ones(1,5) length(delta_dev)*ones(1,5)];
 % disp(S)
 tt_coords = amen_cross(inp, @solve, tol);
 toc
 
-tt_save('tt_coords', tt_coords);
+save_tt(tt_coords, strcat('tt_coords_', num2str(n)));
+
 % toc
 end
 
@@ -37,9 +38,6 @@ function coords = solve(ind)
     global delta_dev
     global delta
     global S
-    global count
-    fprintf('%d\r', count);
-    count = count + 1;
     rho_ind = ind(1:5);
     phi_ind = ind(6:10);
     delta_ind = ind(11:15);
